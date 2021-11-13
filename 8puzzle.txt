@@ -1,0 +1,17 @@
+-Environment : 
+	- This game consists of N tiles where 1 tile is Empty
+	ex :  
+		3 4 5
+		  6 2
+		1 8 7
+	- in this example N = 9 , where number of rows = number of columns = sqrt(N) = 3;
+	
+
+- Goal State :
+	-We want in the end the puzzle solved which means ordered from top left to bottom 
+	right which is shown bellow :
+					1 2 3
+					4 5 6
+					7 8   
+	
+	 
