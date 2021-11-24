@@ -1,30 +1,53 @@
+#:kivy 1.0
 MainLayout:
+
+<Navbar> :
+	orientation : 'horizontal'
+	pos_hint : {"top" : 1}
+	size_hint : 1 , .1
+	spacing : "50dp"
+	canvas.before:
+		Color :
+			rgba : .35 , .35 , .35 , 1
+		Rectangle :
+			pos : self.pos
+			size : self.size 
+	Label :
+		text : "8 Puzzle AI"
+		size_hint : .5 , 1 
+		canvas.before : 
+			Color : 
+				rgba :  .27 , .12 , .81 , 1
+			Rectangle : 
+				pos : self.pos
+				size : self.size
+	Button:
+		size_hint : .5 , 1 
+		text : "8 PUZZLE"
+		color : "white"
+		on_press : root.on_click()
+		canvas.before : 
+			Color : 
+				rgba :  .20 , .12 , .6 , 1
+			Rectangle : 
+				pos : self.pos
+				size : self.size
+		
+
+	
+
+
+
+	
+
+<MainApp>:
+	orientation: "vertical"
+	size_hint : 1 , .9
+	Board :	
+
 
 <MainLayout>:
 	orientation : "vertical"
-	BoxLayout : 
-		orientation : 'horizontal'
-		pos_hint : { "x" : .0 , "y" : .0}
-		Button:
-			size_hint : .5 , None 
-			text : "8 PUZZLE"
-			color : "white"
-			pos : ""
-		Label :
-			text : "8 Puzzle AI"
-			size_hint : 1 , .5 
-	
-	
-	Button : 
-		text : "a7a b2a"
-	
-
-<MainWidget>:
-	Label:
-		text : "8 PUZZLE"
-		color : "white"
-		size : "200dp" , "100dp"
-		pos : "320dp" , "300dp"
-	Button : 
-		text : "a7a b2a"
+	Navbar :
+	MainApp:
 		
