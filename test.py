@@ -9,13 +9,9 @@ from kivy.core.window import Window
 from kivy.uix.image import Image
 from kivy.uix.textinput import TextInput
 from main import breadthFirst , goalStates , checkInversion
-import random
 import numpy as np
 
 
-goalState = [[ 0 , 1 , 2 ], [3 , 4 ,5] , [6 , 7 , 8]]	
-initState = goalState.copy()
-imgs = [[] , [] , []]
 
 
 
