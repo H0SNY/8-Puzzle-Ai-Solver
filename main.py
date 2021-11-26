@@ -17,14 +17,11 @@ def checkInversion(state):
     copy = state.copy()
     zero = copy.index(0)
     copy.pop(zero)
-    print("copied state : " , copy)
     count = 0
     for i in range(7):
-        print("searching for position: " , i)
-        if copy[i] == i + 1: continue
         for j in range(i + 1 , 8):
-            if copy[j] < copy[i] : count = count + 1
-    print("inversions : " , count)
+            if copy[j] < copy[i] :
+                 count = count + 1
     return count
 
 def switch(list,index1,index2):
@@ -46,7 +43,6 @@ def getNextStates(state):
             emptyTile=i
             #    1
             # 0  3
-    print('empty tile in position : ' , emptyTile)
     if emptyTile==0:
         nextStates.append(switch(state,0,1))
         nextStates.append(switch(state, 0, 3))
@@ -85,7 +81,6 @@ def getNextStates(state):
 
 
 def breadthFirst(initialState):
-    global exploredCount , visitedCount
     exploredCount = 1
     visitedCount = 0
     frontier = []
@@ -101,7 +96,7 @@ def breadthFirst(initialState):
         visitedCount += 1
         if state in goalStates:
             print("State Is Accomplished")
-            return state
+            return [state , exploredCount , visitedCount]
         nextStates=getNextStates(state)
         print("possible Next States : " , nextStates)
         for i in range(len(nextStates)):
@@ -113,36 +108,27 @@ def breadthFirst(initialState):
                     frontier.append(nextStates[i])
                     exploredCount += 1
  
-    return initialState
+    return [initialState , exploredCount , visitedCount]
 
-def depthFirst(initialState,goal):
+def depthFirst(initialState):
+    exploredCount = 1
+    visitedCount = 0
     frontier=[]
     frontier.append(initialState)
     explored=[]
-    while frontier:
+    while len(frontier) > 0:
         state=frontier.pop()
         explored.append(state)
+        visitedCount = visitedCount + 1
         if state in goalStates:
-            return state
+            return [state , exploredCount , visitedCount]
         nextStates=getNextStates(state)
         for i in range(len(nextStates)):
             if not nextStates[i] in frontier and not nextStates[i] in explored:
                 frontier.append(nextStates[i])
+                exploredCount = exploredCount + 1
 
-    return initialState    
-
-
-
-
-# input = input("Enter Initial State : ")
-# initialState = list(input)
-# for i in range(len(initialState)):
-#     initialState[i] = int(initialState[i])
-
-# print(initialState)
-# initialState = breadthFirst(initialState,goalState)
-# print("Goal Is Accomplished with state : " , initialState)
-# print("explored : " , exploredCount , "\nvisitedCount : " , visitedCount)
+    return [initialState , exploredCount , visitedCount]    
 
 
 
