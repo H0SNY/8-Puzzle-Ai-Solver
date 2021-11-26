@@ -1,4 +1,6 @@
 from collections import deque
+import heapq
+import math
 
 initialState = []
 goalStates=[
@@ -12,6 +14,56 @@ goalStates=[
     [1, 2, 3, 4, 5, 6, 7 , 0, 8] , 
     [1, 2, 3, 4, 5, 6, 7, 8 , 0] , 
 ]
+moveTrace = []
+
+def puzzleTo2d(state):
+    goalState = goalStates[0].copy()
+    goalState.pop(0)
+    copyState = state.copy()
+    index = copyState.index(0)
+    copyState.pop(index)
+    current = [[]]
+    currentGoal = [[]]
+    finished = False
+    for i in range(3):
+        if finished : break
+        current.append([])
+        currentGoal.append([])
+        for j in range(3):
+            if i == 2 and j == 2:
+                finished = True
+                break
+            current[i].append(copyState[i * 3 + j])
+            currentGoal[i].append(goalState[i * 3 + j])
+    currentGoal.pop(len(currentGoal) - 1)
+    current.pop(len(current) - 1)
+    return [current , currentGoal]
+
+def getManhatten(state):
+    [current , currentGoal] = puzzleTo2d(state)
+    distance = 0
+    for i in range(3):
+        for j in range(3):
+           if i ==2 and j == 2 : break
+           for k in range(3):
+               for m in range(3):
+                   if k == 2 and m == 2: break
+                   if currentGoal[k][m] == current[i][j]:
+                       distance = distance + (abs(i - k) + abs(j - m))
+    return distance
+                   
+def getEuclidean(state):
+    [current , currentGoal] = puzzleTo2d(state)
+    distance = 0
+    for i in range(3):
+        for j in range(3):
+           if i ==2 and j == 2 : break
+           for k in range(3):
+               for m in range(3):
+                   if k == 2 and m == 2: break
+                   if currentGoal[k][m] == current[i][j]:
+                       distance = distance + (math.sqrt((i - k)**2) + math.sqrt((j - m)**2)  )
+    return distance
 
 def checkInversion(state):
     copy = state.copy()
@@ -80,35 +132,38 @@ def getNextStates(state):
     return nextStates
 
 
+def hashState(state):
+    hash = ''
+    for i in range(len(state)):
+        hash = hash + str(state[i])
+    return hash
+def unHashState(hash):
+    state = []
+    for i in range(len(hash)):
+        state[i] = int(hash[i])
+    return state
+
 def breadthFirst(initialState):
     exploredCount = 1
     visitedCount = 0
     frontier = []
     frontier.append(initialState)
-    explored=[]
-    print("Staring Dequing....")
+    explored=set()
     while len(frontier) > 0:
-        print(len(frontier))
         state=frontier.pop(0)
-        print("dequed : " , state)
-        explored.append(state)
-        print("appended in explored and visitedCount incremented")
+        hash = hashState(state)
+        explored.add(hash)
         visitedCount += 1
         if state in goalStates:
-            print("State Is Accomplished")
             return [state , exploredCount , visitedCount]
         nextStates=getNextStates(state)
-        print("possible Next States : " , nextStates)
         for i in range(len(nextStates)):
-            print('Checking Child in explored  : ' , nextStates[i] in explored)
-            print('checking Child in visited : ' ,nextStates[i] in frontier )
-            if  not nextStates[i] in explored:
-                if not nextStates[i] in frontier:
-                    print("not in visited or explored , enqueue")
-                    frontier.append(nextStates[i])
-                    exploredCount += 1
- 
-    return [initialState , exploredCount , visitedCount]
+            nexthash = hashState(nextStates[i])
+            if  not nexthash in explored and not nextStates[i] in frontier:
+                frontier.append(nextStates[i])
+                exploredCount += 1
+    print(explored)
+    return [initialState , exploredCount , visitedCount , explored]
 
 def depthFirst(initialState):
     exploredCount = 1
@@ -132,7 +187,33 @@ def depthFirst(initialState):
 
 
 
-
+def a_star(initalState , type):
+    exploredCount = 1
+    visitedCount = 0
+    gloabalHuristicCost = 0
+    frontier = []
+    heapq.heapify(frontier)
+    heapq.heappush(frontier , [ 0 , initalState])
+    explored = []
+    while len(frontier) > 0:
+        print(len(frontier))
+        [currCost , state] = heapq.heappop(frontier)
+        gloabalHuristicCost = gloabalHuristicCost + currCost
+        explored.append(state)
+        visitedCount = visitedCount + 1
+        if state in goalStates:
+            return [state , exploredCount , visitedCount]
+        nextStates = getNextStates(state)
+        for i in range (len(nextStates)):
+            if not nextStates[i] in frontier and not nextStates[i] in explored :
+                cost = 0
+                if type == 0 : cost = getManhatten(nextStates[i])
+                else : cost  = getEuclidean(nextStates[i])
+                print("manh : " , getManhatten(nextStates[i]) , "Euc : " , getEuclidean(nextStates[i]))
+                heapq.heappush(frontier , [cost , nextStates[i]])
+                exploredCount = exploredCount + 1
+    
+    return [initalState , exploredCount , visitedCount , gloabalHuristicCost]
 
 
 
